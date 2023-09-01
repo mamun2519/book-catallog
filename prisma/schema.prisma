@@ -13,3 +13,87 @@ datasource db {
 model test {
   id String @id @default(uuid())
 }
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  password   String
+  role       UserRole @default(customer)
+  contactNo  String
+  address    String
+  profileImg String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  rating     Rating[]
+  order      Order[]
+
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  books     Book[]
+
+  @@map("category")
+}
+
+model Book {
+  id              String   @id @default(uuid())
+  title           String
+  author          String
+  price           Int
+  genre           String
+  publicationDate String
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  ratings         Rating[]
+
+  @@map("books")
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  review    String
+  rating    Int
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("book-ratings")
+}
+
+model Order {
+  id           String         @id @default(uuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  status       String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orderedBooks OrderedBooks[]
+
+  @@map("orders")
+}
+
+model OrderedBooks {
+  id       String @id @default(uuid())
+  orderId  String
+  order    Order  @relation(fields: [orderId], references: [id])
+  bookId   String
+  quantity String
+
+  @@map("orders-books")
+}
+
+enum UserRole {
+  admin
+  customer
+}
