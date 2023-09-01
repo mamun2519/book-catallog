@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
+import globalErrorHandler from './app/middleware/globalErrorHandler'
 const app: Application = express()
 
 // middleware
@@ -9,6 +10,9 @@ app.use([cors(), express.json(), express.urlencoded({ extended: true })])
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: 'Server start Success..' })
 })
+
+//add to global error handler middleware
+app.use(globalErrorHandler)
 
 // not found route
 app.use((req: Request, res: Response, next: NextFunction) => {
