@@ -29,7 +29,8 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   })
 })
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await OrderService.getByIdFromDB(req.params.id)
+  const user: IDecodedToken | JwtPayload | null = req.user
+  const result = await OrderService.getByIdFromDB(user, req.params.id)
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,

@@ -54,7 +54,10 @@ const getAllFromDB = async (
   })
 }
 
-const getByIdFromDB = async (id: string): Promise<Order | null> => {
+const getByIdFromDB = async (
+  user: IDecodedToken | JwtPayload | null,
+  id: string,
+): Promise<Order | null> => {
   return await prisma.order.findFirst({
     where: { id },
     include: {

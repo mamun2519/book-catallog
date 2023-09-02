@@ -9,7 +9,11 @@ router.post(
   auth(ENUM_USER_ROLE.CUSTOMER),
   OrderController.insertIntoDB,
 )
-router.get('/:id', OrderController.getByIdFromDB)
+router.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.CUSTOMER),
+  OrderController.getByIdFromDB,
+)
 router.patch('/:id', OrderController.updateIntoDB)
 router.get('/:id', OrderController.deleteByIdFromDB)
 router.get(
