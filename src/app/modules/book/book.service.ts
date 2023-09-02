@@ -4,7 +4,11 @@ import { prisma } from '../../../prisma/prisma'
 import { IBookFilterRequest } from './book.interface'
 import { IPaginationOptions } from '../../../interface/paginationOptions'
 import calculatePagination from '../../../shared/calulatePaginatio'
-import { bookSearchableFiled } from './book.constant'
+import {
+  BookRelationalFields,
+  BookRelationalFieldsMapper,
+  bookSearchableFiled,
+} from './book.constant'
 import { IGenericResponse } from '../../../interface/common'
 
 const insertIntoDB = async (data: Book): Promise<Book> => {
@@ -16,14 +20,14 @@ const getAllFromDB = async (
   options: IPaginationOptions,
 ): Promise<IGenericResponse<Book[]>> => {
   const { page, skip, limit } = calculatePagination(options)
-  const { searchTerm, ...filterData }: any = filters
+  const { search, ...filterData }: any = filters
 
   const andConditions = []
-  if (searchTerm) {
+  if (search) {
     andConditions.push({
       OR: bookSearchableFiled.map(filed => ({
         [filed]: {
-          contains: searchTerm,
+          contains: search,
           mode: 'insensitive',
         },
       })),
@@ -44,6 +48,12 @@ const getAllFromDB = async (
             ['price']: {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               lt: Number((filterData as any)[key]),
+            },
+          }
+        } else if (BookRelationalFields.includes(key)) {
+          return {
+            [BookRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
             },
           }
         } else {
@@ -77,6 +87,29 @@ const getAllFromDB = async (
     where: whereCondition,
   })
 
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  }
+}
+
+const getAllByCategoryIdFromDB = async (
+  id: string,
+  options: IPaginationOptions,
+): Promise<IGenericResponse<Book[]>> => {
+  const { page, skip, limit } = calculatePagination(options)
+  const result = await prisma.book.findMany({
+    skip,
+    take: limit,
+    where: {
+      categoryId: id,
+    },
+  })
+  const total = await prisma.book.count()
   return {
     meta: {
       page,
@@ -126,4 +159,5 @@ export const BookService = {
   updateIntoDB,
   deleteByIdFromDB,
   insertIntoDB,
+  getAllByCategoryIdFromDB,
 }

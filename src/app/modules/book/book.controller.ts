@@ -35,6 +35,27 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     data: result.data,
   })
 })
+const getAllByCategoryIdFromDB = catchAsync(
+  async (req: Request, res: Response) => {
+    const options = pickArrayAndConvertObject(req.query, [
+      'page',
+      'limit',
+      'sortBy',
+      'sortOrder',
+    ])
+    const result = await BookService.getAllByCategoryIdFromDB(
+      req.params.id,
+      options,
+    )
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Book fetched Successfully',
+      meta: result.meta,
+      data: result.data,
+    })
+  },
+)
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.getByIdFromDB(req.params.id)
   sendResponse(res, {
@@ -71,4 +92,5 @@ export const BookController = {
   updateIntoDB,
   deleteByIdFromDB,
   insertIntoDB,
+  getAllByCategoryIdFromDB,
 }

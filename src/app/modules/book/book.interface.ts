@@ -1,5 +1,5 @@
 export type IBookFilterRequest = [
-  searchTerm?: string,
+  search?: string,
   minPrice?: string,
   maxPrice?: string,
   category?: string,
