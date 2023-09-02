@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 const insertIntoDB = async (
   user: IDecodedToken | JwtPayload | null,
   data: IOrderRequest,
-): Promise<Order> => {
+): Promise<Order | null> => {
   const orderCreate = await prisma.$transaction(async transactionClient => {
     const order = await transactionClient.order.create({
       data: {
@@ -33,7 +33,15 @@ const insertIntoDB = async (
     }
     return order
   })
-  return orderCreate
+  const userOrder = await prisma.order.findFirst({
+    where: {
+      id: orderCreate.id,
+    },
+    include: {
+      orderedBooks: true,
+    },
+  })
+  return userOrder
 }
 
 const getAllFromDB = async (
