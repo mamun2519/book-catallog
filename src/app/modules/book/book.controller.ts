@@ -4,6 +4,8 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { StatusCodes } from 'http-status-codes'
 import { BookService } from './book.service'
+import pickArrayAndConvertObject from '../../../shared/pick'
+import { bookFilterableFiled } from './book.constant'
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await BookService.insertIntoDB(req.body)
@@ -16,12 +18,21 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await BookService.getAllFromDB()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const filters: any = pickArrayAndConvertObject(req.query, bookFilterableFiled)
+  const options = pickArrayAndConvertObject(req.query, [
+    'page',
+    'limit',
+    'sortBy',
+    'sortOrder',
+  ])
+  const result = await BookService.getAllFromDB(filters, options)
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
     message: 'Book fetched Successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   })
 })
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
