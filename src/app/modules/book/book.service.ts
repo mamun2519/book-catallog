@@ -2,7 +2,7 @@ import { Book } from '@prisma/client'
 import { prisma } from '../../../prisma/prisma'
 
 const insertIntoDB = async (data: Book): Promise<Book> => {
-  return await prisma.book.create({ data })
+  return await prisma.book.create({ data, include: { category: true } })
 }
 
 const getAllFromDB = async (): Promise<Book[]> => {
