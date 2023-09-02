@@ -3,6 +3,8 @@ import { prisma } from '../../../prisma/prisma'
 import { IDecodedToken } from '../../../interface/tokenUser'
 import { JwtPayload } from 'jsonwebtoken'
 import { IOrderRequest } from './order.interface'
+import apiError from '../../../error/apiError'
+import { StatusCodes } from 'http-status-codes'
 
 const insertIntoDB = async (
   user: IDecodedToken | JwtPayload | null,
@@ -58,12 +60,19 @@ const getByIdFromDB = async (
   user: IDecodedToken | JwtPayload | null,
   id: string,
 ): Promise<Order | null> => {
-  return await prisma.order.findFirst({
+  const order = await prisma.order.findFirst({
     where: { id },
     include: {
       orderedBooks: true,
     },
   })
+  if (user?.role == UserRole.customer) {
+    if (order?.userId !== user?.userId) {
+      throw new apiError(StatusCodes.BAD_REQUEST, `Its Not your order id ${id}`)
+    }
+  }
+
+  return order
 }
 
 const updateIntoDB = async (
