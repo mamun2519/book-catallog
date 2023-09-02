@@ -4,9 +4,12 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import { StatusCodes } from 'http-status-codes'
 import { OrderService } from './order.service'
+import { IDecodedToken } from '../../../interface/tokenUser'
+import { JwtPayload } from 'jsonwebtoken'
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await OrderService.insertIntoDB(req.body)
+  const user: IDecodedToken | JwtPayload | null = req.user
+  const result = await OrderService.insertIntoDB(user, req.body)
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,

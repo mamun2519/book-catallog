@@ -75,7 +75,7 @@ model Order {
   id           String         @id @default(uuid())
   userId       String
   user         User           @relation(fields: [userId], references: [id])
-  status       String
+  status       OrderEnum      @default(pending)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   orderedBooks OrderedBooks[]
@@ -83,12 +83,18 @@ model Order {
   @@map("orders")
 }
 
+enum OrderEnum {
+  pending
+  shipped
+  delivered
+}
+
 model OrderedBooks {
   id       String @id @default(uuid())
   orderId  String
   order    Order  @relation(fields: [orderId], references: [id])
   bookId   String
-  quantity String
+  quantity Int
 
   @@map("orders-books")
 }
