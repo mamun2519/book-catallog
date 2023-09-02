@@ -4,4 +4,6 @@ dotenv.config({ path: path.join(process.cwd(), '.env') })
 export const env_config = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
+  token: process.env.TOKEN,
+  expireDate: process.env.EXPIRE,
 }
