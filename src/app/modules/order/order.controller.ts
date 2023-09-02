@@ -19,7 +19,8 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await OrderService.getAllFromDB()
+  const user: IDecodedToken | JwtPayload | null = req.user
+  const result = await OrderService.getAllFromDB(user)
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,

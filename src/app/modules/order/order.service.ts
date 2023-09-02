@@ -1,4 +1,4 @@
-import { Order } from '@prisma/client'
+import { Order, UserRole } from '@prisma/client'
 import { prisma } from '../../../prisma/prisma'
 import { IDecodedToken } from '../../../interface/tokenUser'
 import { JwtPayload } from 'jsonwebtoken'
@@ -34,7 +34,19 @@ const insertIntoDB = async (
   return orderCreate
 }
 
-const getAllFromDB = async (): Promise<Order[]> => {
+const getAllFromDB = async (
+  user: IDecodedToken | JwtPayload | null,
+): Promise<Order[]> => {
+  if (user?.role == UserRole.customer) {
+    return await prisma.order.findMany({
+      where: {
+        userId: user.userId,
+      },
+      include: {
+        orderedBooks: true,
+      },
+    })
+  }
   return await prisma.order.findMany({
     include: {
       orderedBooks: true,
