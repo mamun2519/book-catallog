@@ -1,7 +1,7 @@
 import express from 'express'
 import { AuthController } from './auth.controller'
 const router = express.Router()
-router.post('/singup', AuthController.userSingUp)
-router.post('/singin', AuthController.userSingIn)
+router.post('/signup', AuthController.userSingUp)
+router.post('/signin', AuthController.userSingIn)
 
 export const AuthRoute = router

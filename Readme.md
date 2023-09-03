@@ -11,6 +11,7 @@ https://book-categlog-backend.vercel.app/
 ## User
 
 - https://book-categlog-backend.vercel.app/api/v1/auth/signup (POST)
+- https://book-categlog-backend.vercel.app/api/v1/auth/signin (POST)
 - https://book-categlog-backend.vercel.app/api/v1/users (GET)
 - https://book-categlog-backend.vercel.app/api/v1/users/6177a5b87d32123f08d2f5d4 (Single GET)
 - https://book-categlog-backend.vercel.app/api/v1/users/6177a5b87d32123f08d2f5d4 (PATCH)
